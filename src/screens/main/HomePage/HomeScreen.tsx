@@ -69,13 +69,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       refetch();
-      const getLocalBalance = async () => {
-        const storedBalance = await AsyncStorage.getItem('P2ABalance');
-        if (storedBalance) {
-          setLocalBalance(storedBalance);
-        }
-      };
-      getLocalBalance();
+      // const getLocalBalance = async () => {
+      //   const storedBalance = await AsyncStorage.getItem('P2ABalance');
+      //   if (storedBalance) {
+      //     setLocalBalance(storedBalance);
+      //   }
+      // };
+      // getLocalBalance();
     }, [refetch])
   );
 
@@ -174,7 +174,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         onProfilePress={() => navigation.navigate('MainTabs', { screen: 'Profile' })}
       />
       <LinearGradient
-        colors={[ Colors.primary, Colors.primaryDark,]}
+        colors={[Colors.primary, Colors.primaryDark,]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.headerGradient}
@@ -609,6 +609,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
   },
   offerBanner: {
     borderRadius: Spacing.md,

@@ -104,6 +104,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ navigation }) => {
           source={require('../../Assets/images/splashw.png')}
           style={styles.logo}
         />
+        
       </Animated.View>
 
       <View style={styles.footer}>

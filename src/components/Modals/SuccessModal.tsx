@@ -200,8 +200,8 @@ const SuccessModal = ({
             <img src="https://monexis.store/clients/monexis/logo2.png" alt="Logo" />
           </div>
           <div class="brand-text">
-            <h1>MONEXIS</h1>
-            <p> MONEXIS</p>
+            <h1>Monexis Tech LLP</h1>
+          
           </div>
         </div>
       </div>

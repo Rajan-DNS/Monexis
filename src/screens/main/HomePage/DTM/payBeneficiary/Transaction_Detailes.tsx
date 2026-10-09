@@ -330,8 +330,8 @@ const Transaction_Detailes = () => {
             <img src= 'https://Monexis.store/clients/monexis/logo2.png' alt="Monexis" />
           </div>
           <div class="brand-text">
-            <h1>Monexis</h1>
-            <p>I M ENTERPRISES</p>
+                        <h1>Monexis Tech LLP</h1>
+
           </div>
         </div>
         <button class="print-btn" onclick="window.print()">

@@ -9,7 +9,8 @@ import {
   StyleProp,
   ViewStyle,
   TextStyle,
-  View
+  View,
+  PermissionsAndroid
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
@@ -57,8 +58,39 @@ const SharedPDFDownloadButton: React.FC<SharedPDFDownloadButtonProps> = ({
     return file.filePath;
   };
 
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'ios') return true;
+
+    if (Platform.OS === 'android' && Platform.Version < 33) {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message: 'This app requires storage access to save PDFs directly to your Downloads folder.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn('Storage permission error:', err);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const handleDirectDownloadPDF = async () => {
     if (isLoading || isSharing) return;
+
+    const hasPermission = await requestStoragePermission();
+    if (!hasPermission) {
+      Alert.alert('Permission Denied', 'Unable to save PDF file without storage permission.');
+      return;
+    }
 
     setIsLoading(true);
     const sanitizedFileName = fileName.replace(/[^a-zA-Z0-9_\-]/g, '_');
@@ -66,24 +98,60 @@ const SharedPDFDownloadButton: React.FC<SharedPDFDownloadButtonProps> = ({
     try {
       const tempPath = await generatePDFFile(sanitizedFileName);
 
-      // Using DocumentDirectoryPath avoids Scoped Storage restrictions entirely
-      const targetDownloadPath = `${RNFS.DocumentDirectoryPath}/${sanitizedFileName}.pdf`;
+      let targetDownloadPath = '';
+      let isSavedToDownloads = false;
 
-      const exists = await RNFS.exists(targetDownloadPath);
-      if (exists) {
-        await RNFS.unlink(targetDownloadPath);
+      if (Platform.OS === 'android') {
+        const downloadFolder = RNFS.DownloadDirectoryPath || `${RNFS.ExternalStorageDirectoryPath}/Download`;
+        targetDownloadPath = `${downloadFolder}/${sanitizedFileName}.pdf`;
+
+        try {
+          const exists = await RNFS.exists(targetDownloadPath);
+          if (exists) {
+            await RNFS.unlink(targetDownloadPath);
+          }
+          await RNFS.copyFile(tempPath, targetDownloadPath);
+          await RNFS.scanFile(targetDownloadPath).catch(() => {});
+          isSavedToDownloads = true;
+        } catch (copyErr) {
+          console.warn('Failed to copy to DownloadDirectoryPath, falling back to DocumentDirectoryPath:', copyErr);
+          targetDownloadPath = `${RNFS.DocumentDirectoryPath}/${sanitizedFileName}.pdf`;
+          const exists = await RNFS.exists(targetDownloadPath);
+          if (exists) {
+            await RNFS.unlink(targetDownloadPath);
+          }
+          await RNFS.copyFile(tempPath, targetDownloadPath);
+          isSavedToDownloads = false;
+        }
+      } else {
+        targetDownloadPath = `${RNFS.DocumentDirectoryPath}/${sanitizedFileName}.pdf`;
+        const exists = await RNFS.exists(targetDownloadPath);
+        if (exists) {
+          await RNFS.unlink(targetDownloadPath);
+        }
+        await RNFS.copyFile(tempPath, targetDownloadPath);
       }
 
-      await RNFS.copyFile(tempPath, targetDownloadPath);
-      if (onGenerationSuccess) onGenerationSuccess(targetDownloadPath);
+      // Clean up temporary conversion file
+      if (tempPath !== targetDownloadPath) {
+        await RNFS.unlink(tempPath).catch(() => {});
+      }
+
+      if (onGenerationSuccess) {
+        onGenerationSuccess(targetDownloadPath);
+      }
 
       Alert.alert(
         'Download Complete',
-        'PDF saved successfully to App Documents!'
+        Platform.OS === 'android'
+          ? (isSavedToDownloads
+              ? `PDF saved successfully to Downloads folder!\n\nFile: ${sanitizedFileName}.pdf\n\nLocation:\n${targetDownloadPath}`
+              : `PDF saved successfully!\n\nFile: ${sanitizedFileName}.pdf\n\nLocation:\n${targetDownloadPath}`)
+          : `PDF saved successfully to App Documents!\n\nFile: ${sanitizedFileName}.pdf\n\nLocation:\n${targetDownloadPath}`
       );
     } catch (error) {
       console.error("Direct PDF Download Error: ", error);
-      Alert.alert('Error', 'Failed to save PDF directly to device.');
+      Alert.alert('Download Error', 'Failed to save PDF directly to device.');
     } finally {
       setIsLoading(false);
     }

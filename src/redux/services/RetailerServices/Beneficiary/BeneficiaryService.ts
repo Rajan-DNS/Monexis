@@ -148,9 +148,17 @@ export const BeneficiaryService = () => {
             const response = await dmtPayRequest(payload).unwrap();
             
             if (response?.success) {
+                let parsedData = response?.data;
+                if (typeof parsedData === 'string') {
+                    try {
+                        parsedData = JSON.parse(parsedData);
+                    } catch (e) {
+                        // keep original if parsing fails
+                    }
+                }
                 return {
                     success: true,
-                    data: response?.data || response,
+                    data: parsedData !== undefined ? parsedData : response,
                     message: response?.message || 'Payment successful',
                 };
             } else {
@@ -162,7 +170,7 @@ export const BeneficiaryService = () => {
         } catch (error: any) {
             return {
                 success: false,
-                message: error?.data?.message || 'Payment failed',
+                message: error?.data?.message || error?.message || 'Payment failed',
             };
         }
     };

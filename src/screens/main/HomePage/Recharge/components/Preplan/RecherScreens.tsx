@@ -22,6 +22,7 @@ import { RootStackParamList } from '../../../../../../navigation/RootNavigator';
 
 const { width } = Dimensions.get('window');
 const baseUrl = 'https://webapi.monexis.store';
+// https://webapi.monexis.store
 
 const schema = yup.object().shape({
     mobileNumber: yup
@@ -74,7 +75,7 @@ const RechargeScreen: React.FC = () => {
         });
 
         getCircle();
-    }, [activeTab,getOperator]);
+    }, [activeTab, getOperator]);
 
     const operatorData = operatorRawData ? (Array.isArray(operatorRawData) ? operatorRawData : (operatorRawData.data || [])) : [];
     const circleData = circleRawData ? (Array.isArray(circleRawData) ? circleRawData : (circleRawData.data || [])) : [];
@@ -86,12 +87,12 @@ const RechargeScreen: React.FC = () => {
     }, [mobileNumber]);
 
     useEffect(() => {
-    if (operatorData.length > 0) {
-        setSelectedOperator(operatorData[0]);
-    } else {
-        setSelectedOperator(null);
-    }
-}, [operatorData]);
+        if (operatorData.length > 0) {
+            setSelectedOperator(operatorData[0]);
+        } else {
+            setSelectedOperator(null);
+        }
+    }, [operatorData]);
 
     const fetchOperatorInfo = async (number: string) => {
         try {
@@ -250,6 +251,7 @@ const RechargeScreen: React.FC = () => {
         });
     };
 
+    // console.log("Selected Operator:", selectedOperator.logoURL);
     return (
         <View style={localStyles.screen}>
             {/* Custom Premium White Header */}
@@ -379,7 +381,7 @@ const RechargeScreen: React.FC = () => {
                             >
                                 <View style={localStyles.operatorLogoSmall}>
                                     {selectedOperator?.logoURL ? (
-                                        <Image source={{ uri: `${baseUrl}${selectedOperator.logoURL}` }} style={localStyles.opLogo} resizeMode='cover' />
+                                        <Image source={{ uri: `${baseUrl}/${selectedOperator.logoURL}` }} style={localStyles.opLogo} resizeMode='cover' />
                                     ) : (
                                         <Text style={localStyles.operatorInitial}>
                                             {(selectedOperator?.name || selectedOperator?.operatorName)?.charAt(0).toUpperCase()}

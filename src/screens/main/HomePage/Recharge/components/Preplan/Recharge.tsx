@@ -14,9 +14,9 @@ interface SectionHeaderProps {
 const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => (
   <View style={styles.sectionHeader}>
     <Text style={styles.sectionTitle}>{title}</Text>
-    <TouchableOpacity>
+    {/* <TouchableOpacity>
       <Text style={styles.viewAll}>View All</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
   </View>
 );
 
@@ -89,32 +89,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     // fontFamily: Poppins.semiBold,
   },
- gridContainer: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
-  alignItems: 'center',
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
 
-  backgroundColor: Colors.white,
-  borderRadius: 24,
-  padding: 10,
-  marginBottom: 16,
+    backgroundColor: Colors.white,
+    borderRadius: 24,
+    padding: 10,
+    marginBottom: 16,
 
-  borderWidth: 1,
-  borderColor: Colors.borderLight,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
 
-  // iOS Shadow
-  shadowColor: Colors.shadow,
-  shadowOffset: {
-    width: 0,
-    height: 2,
+    // iOS Shadow
+    shadowColor: Colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1,
+
+    // Android Shadow
+    elevation: 2,
   },
-  shadowOpacity: 0.25,
-  shadowRadius: 1,
-
-  // Android Shadow
-  elevation: 2,
-},
 });
 
 

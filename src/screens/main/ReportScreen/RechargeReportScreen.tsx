@@ -470,8 +470,8 @@ const RechargeReportScreen = ({ navigation }: any) => {
             <img src="https://monexis.store/clients/monexis/logo2.png" alt="Logo" />
           </div>
           <div class="brand-text">
-            <h1>Monexis</h1>
-            <p> I M ENTERPRISES</p>
+                      <h1>Monexis Tech LLP</h1>
+
           </div>
         </div>
         <div class="pdf-button" onclick="window.print()">

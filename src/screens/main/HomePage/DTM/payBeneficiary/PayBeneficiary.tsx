@@ -329,18 +329,23 @@ const PayBeneficiary = () => {
   const processPayment = async (pin: string) => {
     setIsAuthModalVisible(false);
 
+    // Retain input field values for modals/receipts before clearing
+    const currentAmount = amount;
+    const currentTransferType = transferType;
+    const currentBeneficiary = selectedBeneficiary;
+
     try {
       const selectedTypeObj = transferTypesList.find(
-        (t: any) => (t.text || '').toUpperCase() === transferType.toUpperCase()
+        (t: any) => (t.text || '').toUpperCase() === currentTransferType.toUpperCase()
       );
 
       const parsedDevice = await getAllDeviceData();
 
       const paymentData = {
-        beneficiaryId: selectedBeneficiary.id,
+        beneficiaryId: currentBeneficiary?.id,
         mediumId: 2,
-        amount: Number(amount),
-        transferType: transferType,
+        amount: Number(currentAmount),
+        transferType: currentTransferType,
         transferTypeId: selectedTypeObj?.value === 'all' ? 0 : (Number(selectedTypeObj?.value) || 2),
 
         deviceInfo: deviceModel,
@@ -354,44 +359,68 @@ const PayBeneficiary = () => {
           : null,
       };
 
+      // Clear the input fields upon calling processPayment
+      resetForm();
+
       const response = await payBeneficiary(paymentData);
 
-      if (response.success) {
-        const txStatus = response.data?.status?.toUpperCase();
-
-        if (response.success === true) {
-          setTransactionData({
-            ...response.data,
-            amount: amount,
-            transferType: transferType,
-            beneficiary: selectedBeneficiary,
-          });
-          setIsSuccessModalVisible(true);
-        } else {
-          setTransactionData({
-            ...response.data,
-            amount: amount,
-            transferType: transferType,
-            beneficiary: selectedBeneficiary,
-            error: response.data?.message || 'Transaction failed.',
-          });
-          setIsFailedModalVisible(true);
+      // Handle parsed data if response.data is stringified JSON
+      let parsedData: any = response?.data;
+      if (typeof parsedData === 'string') {
+        try {
+          parsedData = JSON.parse(parsedData);
+        } catch (e) {
+          console.error('Failed to parse response.data JSON:', e);
+          parsedData = {};
         }
-      } else {
+      }
+
+      console.log('payBeneficiary parsed response data:', parsedData);
+
+      const txStatus = (parsedData?.Status || parsedData?.status || '').toUpperCase();
+      const isTxSuccess = response?.success === true && (txStatus === 'SUCCESS' || txStatus === 'SUCCESSFUL');
+
+      const txnPayload = {
+        ...(parsedData && typeof parsedData === 'object' ? parsedData : {}),
+        amount: currentAmount,
+        transferType: currentTransferType,
+        beneficiary: currentBeneficiary,
+        txnId: (parsedData?.TransactionId !== undefined && parsedData?.TransactionId !== null && parsedData?.TransactionId !== '')
+          ? String(parsedData.TransactionId)
+          : (parsedData?.txnId ? String(parsedData.txnId) : 'N/A'),
+        utrNumber: parsedData?.OperatorId || parsedData?.utrNumber || parsedData?.operatorId || 'N/A',
+        bankName: currentBeneficiary?.bankName || parsedData?.bankName || 'N/A',
+        accNo: currentBeneficiary?.accountNumber || parsedData?.accountNumber || 'N/A',
+        ifcecode: currentBeneficiary?.ifsccode || parsedData?.ifsccode || 'N/A',
+        date: new Date(),
+      };
+
+      if (isTxSuccess) {
         setTransactionData({
-          amount: amount,
-          transferType: transferType,
-          beneficiary: selectedBeneficiary,
-          error: response.message || 'Server error occurred.',
+          ...txnPayload,
+          status: 'SUCCESS',
+          message: parsedData?.Message || parsedData?.message || response?.message || 'Transaction Successful.',
+        });
+        setIsSuccessModalVisible(true);
+        refetchBalance?.();
+      } else {
+        const errorMessage = parsedData?.Message || parsedData?.message || response?.message || 'Transaction Failed.';
+        setTransactionData({
+          ...txnPayload,
+          error: errorMessage,
+          status: txStatus || 'FAILED',
         });
         setIsFailedModalVisible(true);
+        refetchBalance?.();
       }
     } catch (error: any) {
       setTransactionData({
-        amount: amount,
-        transferType: transferType,
-        beneficiary: selectedBeneficiary,
+        amount: currentAmount,
+        transferType: currentTransferType,
+        beneficiary: currentBeneficiary,
         error: error.message || 'Payment failed',
+        status: 'FAILED',
+        date: new Date(),
       });
       setIsFailedModalVisible(true);
     }
@@ -481,6 +510,7 @@ const PayBeneficiary = () => {
   };
 
   const resetForm = () => {
+    setSelectedBeneficiary(null);
     setAmount('');
     setPaymentMethod('Wallet');
     setTransferType('');
@@ -715,9 +745,9 @@ const PayBeneficiary = () => {
         visible={isSuccessModalVisible}
         onClose={() => setIsSuccessModalVisible(false)}
         transactionData={transactionData}
-        amount={amount}
-        transferType={transferType}
-        selectedBeneficiary={selectedBeneficiary}
+        amount={transactionData?.amount || amount}
+        transferType={transactionData?.transferType || transferType}
+        selectedBeneficiary={transactionData?.beneficiary || selectedBeneficiary}
         formatDate={formatDate}
       />
 
@@ -725,10 +755,10 @@ const PayBeneficiary = () => {
         visible={isFailedModalVisible}
         onClose={() => setIsFailedModalVisible(false)}
         transactionData={transactionData}
-        amount={amount}
-        transferType={transferType}
+        amount={transactionData?.amount || amount}
+        transferType={transactionData?.transferType || transferType}
         formatDate={formatDate}
-        selectedBeneficiary={selectedBeneficiary}
+        selectedBeneficiary={transactionData?.beneficiary || selectedBeneficiary}
       />
 
       <BeneficiarySelectionModal

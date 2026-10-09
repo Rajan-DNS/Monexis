@@ -27,7 +27,7 @@ import { HomeSkeleton } from '../../../../components/Skeleton';
 
 const { width } = Dimensions.get('window');
 
-import { CompositeScreenProps } from '@react-navigation/native';
+import { CompositeScreenProps, useFocusEffect } from '@react-navigation/native';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootStackParamList } from '../../../../navigation/RootNavigator';
 import { TabParamList } from '../../../../navigation/MainTabs';
@@ -94,6 +94,13 @@ const HomeScreenD: React.FC<HomeScreenDProps> = ({ navigation }) => {
       console.error('Failed to refresh balance:', error);
     }
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+
+      handleRefreshBalance();
+    }, [refetch])
+  );
 
   const currentBalance = localBalance ?? balanceData?.data?.p2ABalance ?? user?.p2PBalance ?? '0.00';
 
@@ -137,7 +144,7 @@ const HomeScreenD: React.FC<HomeScreenDProps> = ({ navigation }) => {
               <View>
                 <Text style={styles.welcomeLabel}>👋 Welcome Back</Text>
                 <Text style={styles.userName}>
-                  {user?.name || 'User'} {(user?.role )&& `(${user.role})`}
+                  {user?.name || 'User'} {(user?.role) && `(${user.role})`}
                 </Text>
               </View>
             </View>

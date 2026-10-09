@@ -25,7 +25,7 @@ import { RootStackParamList } from '../../../../../navigation/RootNavigator';
 import { Poppins } from '../../../../../theme/typography';
 import { FontSize, Radius, Spacing, IconSize } from '../../../../../theme/spacing';
 
-const baseUrl = 'https://webapi.apiimpay.com/';
+const baseUrl = 'https://webapi.monexis.store/';
 
 interface DynamicValidationField {
   id: number;

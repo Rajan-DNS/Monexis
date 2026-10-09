@@ -27,7 +27,7 @@ interface DNSDropdownProps {
   placeholder?: string;
 }
 
-const baseUrl = 'https://webapi.monexis.store';
+const baseUrl = 'https://webapi.monexis.store/';
 
 const DNSDropdown: React.FC<DNSDropdownProps> = ({
   label,

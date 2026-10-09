@@ -23,12 +23,15 @@ interface FailedModalProps {
     amount?: string | number;
     transferType?: string;
     error?: string;
+    message?: string;
     utrNumber?: string;
     txnId?: string;
     beneficiary?: {
       accountHolderName?: string;
     };
     date?: any;
+    status?: string;
+    Status?: string;
   };
   amount?: string | number;
   transferType?: string;
@@ -36,7 +39,6 @@ interface FailedModalProps {
     accountHolderName?: string;
   };
   formatDate: (date: any) => string;
-
 }
 
 const FailedModal = ({
@@ -50,16 +52,25 @@ const FailedModal = ({
 }: FailedModalProps) => {
   const navigation = useNavigation<any>();
 
+  const statusRaw = (transactionData?.Status || transactionData?.status || '').toUpperCase();
+  const isProcessing = statusRaw === 'PROCESSING' || statusRaw === 'PENDING';
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <View style={[styles.modalIcon, { backgroundColor: '#FEE2E2' }]}>
-            <MaterialCommunityIcons name="alert-circle" size={40} color="#EF4444" />
+          <View style={[styles.modalIcon, { backgroundColor: isProcessing ? '#FEF3C7' : '#FEE2E2' }]}>
+            <MaterialCommunityIcons
+              name={isProcessing ? "clock-outline" : "alert-circle"}
+              size={40}
+              color={isProcessing ? "#F59E0B" : "#EF4444"}
+            />
           </View>
-          <Text style={styles.modalTitle}>Transaction Failed</Text>
+          <Text style={styles.modalTitle}>
+            {isProcessing ? 'Transaction Processing' : 'Transaction Failed'}
+          </Text>
           <Text style={styles.modalSubtitle}>
-            {transactionData?.error || 'Transaction could not be completed. Please try again.'}
+            {transactionData?.error || transactionData?.message || (isProcessing ? 'Transaction is under processing. Please check status later.' : 'Transaction could not be completed. Please try again.')}
           </Text>
 
           <View style={styles.receiptBox}>
@@ -84,18 +95,45 @@ const FailedModal = ({
                 {transactionData?.txnId || 'N/A'}
               </Text>
             </View>
-            {/* <View style={styles.receiptRow}>
-              <Text style={styles.receiptLabel}>Beneficiary</Text>
-              <Text style={styles.receiptValue}>
-                {transactionData?.beneficiary?.accountHolderName || selectedBeneficiary?.accountHolderName || 'N/A'}
+            <View style={styles.receiptRow}>
+              <Text style={styles.receiptLabel}>Status</Text>
+              <Text style={[styles.receiptValue, { color: isProcessing ? '#D97706' : '#EF4444' }]}>
+                {isProcessing ? 'Processing' : 'Failed'}
               </Text>
-            </View> */}
-
+            </View>
           </View>
 
-          <TouchableOpacity style={[styles.primaryModalButton, { backgroundColor: '#B91C1C' }]} onPress={onClose}>
-            <MaterialCommunityIcons name="refresh" size={20} color="#FFF" style={{ marginRight: 8 }} />
-            <Text style={styles.primaryModalButtonText}>Retry</Text>
+          <TouchableOpacity
+            // style={[styles.primaryModalButton, { backgroundColor: isProcessing ? '#D97706' : '#B91C1C' }]}
+            // onPress={onClose}
+                        // onPress={() => navigation.navigate('Payment_Report')}
+style={[
+    styles.primaryModalButton, 
+    { backgroundColor: isProcessing ? '#D97706' : '#B91C1C' }
+  ]}
+  onPress={() => {
+    if (isProcessing) {
+      // "Check Status" clicked
+      navigation.navigate('Payment_Report');
+    } else {
+      // "Retry" clicked
+      onClose(); // Replace onClose() with your actual function to close the modal or retry
+    }
+  }}
+
+          >
+
+            
+
+            <MaterialCommunityIcons
+              name={isProcessing ? "clock-outline" : "refresh"}
+              size={20}
+              color="#FFF"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.primaryModalButtonText}>
+              {isProcessing ? 'Check Status' : 'Retry'}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.secondaryModalButton} onPress={onClose}>

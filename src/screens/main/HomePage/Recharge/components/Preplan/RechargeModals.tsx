@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Modal, FlatList, Image } from 'react-nati
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { rechargeStyles as styles } from '../../rechargeStyles';
 import { Colors } from '../../../../../../theme';
-const baseUrl = 'https://webapi.apiimpay.com/';
+const baseUrl = 'https://webapi.monexis.store/';
 
 
 interface OperatorModalProps {

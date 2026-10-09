@@ -87,9 +87,9 @@ const TransfersPayments: React.FC<TransfersPaymentsProps> = ({ onDmtPress }) => 
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Money Transfers</Text>
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                     <Text style={styles.viewAll}>View All</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <View style={styles.gridContainer}>
