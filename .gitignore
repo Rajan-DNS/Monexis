@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+
+# Android
+.gradle
+build/
+android/app/build/
+android/build/
+android/app/.cxx/
+android/.cxx/
+*.keystore
+!debug.keystore
+*.jks
+*.apk
+*.aab
+
+# iOS
+ios/build/
+ios/Pods/
+ios/DerivedData/
+ios/Podfile.lock
+
+# Native
+.cxx/
+
+# Environment
+.env
+.env.local
+.env.sample
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Custom / Sensitive Files
+rajan
+rajan.pub
+rajan*

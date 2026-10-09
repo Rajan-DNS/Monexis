@@ -1,0 +1,57 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "android/app/src/main/assets/fonts/MeaCulpa-Regular.ttf",
+      "sha1": "2ffd424c6902d9e93536e4d344fefd2876ec925e"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-Bold.ttf",
+      "sha1": "b96b1b199a7654953781fd9252c7c82615a664c5"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-Italic-VariableFont_wdth,wght.ttf",
+      "sha1": "cec6b329495ea2a15df73bb50ee3960f6de6d181"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-Medium.ttf",
+      "sha1": "a7327c367edb41d4da1123986d2f0cdb463dfab2"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-Regular.ttf",
+      "sha1": "35f023a37f126313403845ac2a8a733baac79f8c"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-SemiBold.ttf",
+      "sha1": "d2d8c5f46e4da28f14beccdb125202dd53b6e53f"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/NotoSerif-VariableFont_wdth,wght.ttf",
+      "sha1": "aa0efdf882d41fb583ccafe040fbf9ab9d0884b7"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/PinyonScript-Regular.ttf",
+      "sha1": "bdb8dd38cc4cda3dc7816413620cf2d81561441a"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/Poppins-Bold.ttf",
+      "sha1": "45e4d582cbb4dab2bbad3f624fad9ae567c66547"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/Poppins-ExtraBold.ttf",
+      "sha1": "dd3b4a7629e386f2562ba90622e4ed6de545c12b"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/Poppins-Medium.ttf",
+      "sha1": "e837165aedb031ea74872c5983a3217d1c190a1a"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/Poppins-Regular.ttf",
+      "sha1": "86a425be5a919d86729b85b2bc1d07da5ce413d4"
+    },
+    {
+      "path": "android/app/src/main/assets/fonts/Poppins-SemiBold.ttf",
+      "sha1": "622ca6ccbe2f22c5611dffa016b745bd26be154c"
+    }
+  ]
+}
