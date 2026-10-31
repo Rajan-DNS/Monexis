@@ -221,7 +221,7 @@ export const WATER_PAY_CONFIG: PayConfig = {
         { label: 'Billing Cycle', value: 'Oct 2023' },
         { label: 'Transaction ID', value: 'TXN90284711049' },
         { label: 'Date & Time', value: '24 Oct 2023, 11:42 AM' },
-        { label: 'Payment Mode', value: 'NextGen Wallet' },
+        { label: 'Payment Mode', value: 'Monexis Wallet' },
     ],
     similarPayments: [
         { label: 'Water Bill', subLabel: 'MCGM Mumbai', icon: 'water-pump' },
@@ -273,7 +273,7 @@ export const FASTAG_PAY_CONFIG: PayConfig = {
         { label: 'Vehicle Number', value: 'MH 12 AB 1234' },
         { label: 'Transaction ID', value: 'TXN8029311049' },
         { label: 'Date & Time', value: '24 Oct 2023, 11:45 AM' },
-        { label: 'Payment Mode', value: 'NextGen Wallet' },
+        { label: 'Payment Mode', value: 'Monexis Wallet' },
     ],
     rewards: [
         { label: 'New Balance', value: '₹1,240.00', color: '#1A1D2E', icon: 'wallet' },
@@ -331,7 +331,7 @@ export const GAS_BOOKING_PAY_CONFIG: PayConfig = {
         { label: 'Booking ID', value: 'BK-77492831' },
         { label: 'Transaction ID', value: 'TXN9028475510' },
         { label: 'ESTIMATED DELIVERY', value: 'Tomorrow, 12 Oct' },
-        { label: 'Payment Mode', value: 'NextGen Wallet' },
+        { label: 'Payment Mode', value: 'Monexis Wallet' },
     ],
     rewards: [
         { label: 'New Balance', value: '₹1,240.00', color: '#1A1D2E', icon: 'wallet' },

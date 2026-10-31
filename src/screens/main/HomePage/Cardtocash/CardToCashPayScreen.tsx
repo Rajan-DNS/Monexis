@@ -218,7 +218,7 @@ const CardToCashPayScreen: React.FC = () => {
             <MaterialCommunityIcons name="wallet-outline" size={24} color={Colors.primary} />
           </View>
           <View style={styles.paymentMethodInfo}>
-            <Text style={styles.paymentMethodTitle}>NextGen Wallet</Text>
+            <Text style={styles.paymentMethodTitle}>Monexis Wallet</Text>
             <Text style={styles.paymentMethodSub}>Sufficient balance available</Text>
           </View>
           <MaterialCommunityIcons name="radiobox-marked" size={24} color={Colors.primary} />

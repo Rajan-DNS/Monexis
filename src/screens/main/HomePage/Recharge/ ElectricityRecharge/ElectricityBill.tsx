@@ -250,7 +250,7 @@ const ElectricityBill = () => {
         <View style={styles.paymentMethods}>
           <PaymentOption
             id="wallet"
-            title="NextGen Wallet"
+            title="Monexis Wallet"
             subtitle={`Balance: ₹${amount}`}
             icon="wallet-outline"
             selected={selectedPayment === 'wallet'}
@@ -278,7 +278,7 @@ const ElectricityBill = () => {
             size={20}
             color={Colors.successDark}
           />
-          <Text style={styles.walletBadgeText}>PAID VIA NEXTGEN WALLET</Text>
+          <Text style={styles.walletBadgeText}>PAID VIA Monexis WALLET</Text>
         </View>
 
         {/* AVAILABLE OFFERS */}
@@ -435,7 +435,7 @@ const HistoryCard = ({ plan, idx }: { plan: Plan; idx: number }) => {
           </View>
           <View style={styles.detailsRow}>
             <Text style={styles.detailsLabel}>Payment Mode</Text>
-            <Text style={styles.detailsValue}>NextGen Wallet</Text>
+            <Text style={styles.detailsValue}>Monexis Wallet</Text>
           </View>
         </View>
       )}

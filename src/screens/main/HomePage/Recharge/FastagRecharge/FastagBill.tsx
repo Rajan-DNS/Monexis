@@ -56,7 +56,7 @@ export interface BillConfig {
 const FastagBill: React.FC<any> = () => {
     const route = useRoute<RouteProp<RootStackParamList, 'FastagBill'>>();
     const params = route.params || {} as any;
-    
+
     const config = {
         ...FASTAG_BILL_CONFIG,
         consumerValue: params.consumerNumber || FASTAG_BILL_CONFIG.consumerValue,
@@ -76,7 +76,7 @@ const FastagBill: React.FC<any> = () => {
     });
     const [payBill, { isLoading: isPaying }] = useBillpayMutation();
 
- const {
+    const {
         deviceModel,
         locationCoords,
         locationString,
@@ -177,8 +177,8 @@ const FastagBill: React.FC<any> = () => {
                     <Image source={require('../../../../../Assets/img/DTH/dth.png')} style={styles.promoImage} />
                 </View>
 
-          
-   <LocationInfoCard
+
+                <LocationInfoCard
                     deviceModel={deviceModel}
                     locationCoords={locationCoords}
                     locationString={locationString}
@@ -195,61 +195,61 @@ const FastagBill: React.FC<any> = () => {
                     colors={[Colors.primaryDark, Colors.primary]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }} style={styles.operatorCard}>
-                        <View style={{padding:20}}>
-                    <View style={styles.cardHeader}>
-                        <View style={styles.iconContainer}>
-                            <MaterialCommunityIcons name={config.operatorIcon} size={28} color={Colors.white} />
-                        </View>
-                        <View style={styles.operatorInfo}>
-                            <Text style={styles.operatorLabel}>DTH OPERATOR</Text>
-                            <Text style={styles.operatorName}>{config.operatorName}</Text>
-                        </View>
-                    </View>
-
-                    {config.priceBreakdown && (
-                        <View style={styles.breakdownSection}>
-                            {config.priceBreakdown.map((item, idx) => (
-                                <View key={idx} style={styles.breakdownRow}>
-                                    <Text style={styles.breakdownLabel}>{item.label}</Text>
-                                    <Text style={styles.breakdownValue}>₹{item.value}</Text>
-                                </View>
-                            ))}
-                        </View>
-                    )}
-
-                    {config.priceBreakdown && (
-                        <View style={styles.breakdownSection}>
-                            {config.priceBreakdown.map((item, idx) => (
-                                <View key={idx} style={styles.breakdownRow}>
-                                    <Text style={styles.breakdownLabel}>{item.label}</Text>
-                                    <Text style={styles.breakdownValue}>₹{item.value}</Text>
-                                </View>
-                            ))}
-                        </View>
-                    )}
-
-                    <View style={styles.infoRow}>
-                        <Text style={styles.infoLabel}>{config.consumerLabel}</Text>
-                        <Text style={styles.infoValue}>{config.consumerValue}</Text>
-                    </View>
-
-                    <View style={styles.divider} />
-
-                    <View style={styles.planSection}>
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.infoLabel}>Recharge Plan</Text>
-                            <Text style={styles.priceValue}>₹{config.currentAmount}</Text>
-                        </View>
-                        <View style={styles.validityBadge}>
-                            <View style={styles.validityTag}>
-                                <Text style={styles.validityTagText}>Validiy</Text>
+                    <View style={{ padding: 20 }}>
+                        <View style={styles.cardHeader}>
+                            <View style={styles.iconContainer}>
+                                <MaterialCommunityIcons name={config.operatorIcon} size={28} color={Colors.white} />
                             </View>
-                            <View style={styles.validityRow}>
-                                <MaterialCommunityIcons name="calendar-month" size={18} color={Colors.white} />
-                                <Text style={styles.validityText}>{config.validity || '28 DAYS'}</Text>
+                            <View style={styles.operatorInfo}>
+                                <Text style={styles.operatorLabel}>DTH OPERATOR</Text>
+                                <Text style={styles.operatorName}>{config.operatorName}</Text>
                             </View>
                         </View>
-                    </View>
+
+                        {config.priceBreakdown && (
+                            <View style={styles.breakdownSection}>
+                                {config.priceBreakdown.map((item, idx) => (
+                                    <View key={idx} style={styles.breakdownRow}>
+                                        <Text style={styles.breakdownLabel}>{item.label}</Text>
+                                        <Text style={styles.breakdownValue}>₹{item.value}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
+                        {config.priceBreakdown && (
+                            <View style={styles.breakdownSection}>
+                                {config.priceBreakdown.map((item, idx) => (
+                                    <View key={idx} style={styles.breakdownRow}>
+                                        <Text style={styles.breakdownLabel}>{item.label}</Text>
+                                        <Text style={styles.breakdownValue}>₹{item.value}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
+                        <View style={styles.infoRow}>
+                            <Text style={styles.infoLabel}>{config.consumerLabel}</Text>
+                            <Text style={styles.infoValue}>{config.consumerValue}</Text>
+                        </View>
+
+                        <View style={styles.divider} />
+
+                        <View style={styles.planSection}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.infoLabel}>Recharge Plan</Text>
+                                <Text style={styles.priceValue}>₹{config.currentAmount}</Text>
+                            </View>
+                            <View style={styles.validityBadge}>
+                                <View style={styles.validityTag}>
+                                    <Text style={styles.validityTagText}>Validiy</Text>
+                                </View>
+                                <View style={styles.validityRow}>
+                                    <MaterialCommunityIcons name="calendar-month" size={18} color={Colors.white} />
+                                    <Text style={styles.validityText}>{config.validity || '28 DAYS'}</Text>
+                                </View>
+                            </View>
+                        </View>
                     </View>
                 </LinearGradient>
 
@@ -278,7 +278,7 @@ const FastagBill: React.FC<any> = () => {
                 <View style={styles.paymentMethods}>
                     <PaymentOption
                         id="wallet"
-                        title="NextGen Wallet"
+                        title="Monexis Wallet"
                         subtitle={`Balance: ₹${config.currentAmount}`}
                         icon="wallet-outline"
                         selected={selectedPayment === 'wallet'}
@@ -302,7 +302,7 @@ const FastagBill: React.FC<any> = () => {
                 {/* Wallet Badge */}
                 <View style={styles.walletBadge}>
                     <MaterialCommunityIcons name="shield-check-outline" size={20} color={Colors.successDark} />
-                    <Text style={styles.walletBadgeText}>PAID VIA NEXTGEN WALLET</Text>
+                    <Text style={styles.walletBadgeText}>PAID VIA MONEXIS WALLET</Text>
                 </View>
 
                 {/* Available Offers */}
@@ -442,41 +442,53 @@ const styles = StyleSheet.create({
         fontFamily: Poppins.semiBold,
     },
 
-    operatorName: { color: Colors.white, 
-        fontSize: 16, 
-         marginTop: 2,
-          fontFamily: Poppins.semiBold },
-    infoRow: { flexDirection: 'row', 
-        justifyContent: 'space-between',
-         alignItems: 'center',
-          marginTop: 12 },
-    infoLabel: { color: 'rgba(255,255,255,0.8)', 
-        fontSize: 16, 
-        fontFamily: Poppins.regular, },
-    infoValue: { color: Colors.white,
-         fontSize: 20, 
-          fontFamily: Poppins.regular },
-    divider: { height: 1, 
-        backgroundColor: 'rgba(255,255,255,0.2)',
-         marginVertical: 10 
-        },
-    planSection: { flexDirection: 'row', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-end' 
+    operatorName: {
+        color: Colors.white,
+        fontSize: 16,
+        marginTop: 2,
+        fontFamily: Poppins.semiBold
     },
-    priceValue: { color: Colors.white,
-         fontSize: 20, 
-         marginTop: 4, 
-         fontFamily: Poppins.semiBold },
+    infoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 12
+    },
+    infoLabel: {
+        color: 'rgba(255,255,255,0.8)',
+        fontSize: 16,
+        fontFamily: Poppins.regular,
+    },
+    infoValue: {
+        color: Colors.white,
+        fontSize: 20,
+        fontFamily: Poppins.regular
+    },
+    divider: {
+        height: 1,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        marginVertical: 10
+    },
+    planSection: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end'
+    },
+    priceValue: {
+        color: Colors.white,
+        fontSize: 20,
+        marginTop: 4,
+        fontFamily: Poppins.semiBold
+    },
     validityBadge: { alignItems: 'flex-end' },
     validityTag: { backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.5)', marginBottom: 8 },
-    validityTagText: { color: Colors.white, fontSize: 12,  fontFamily: Poppins.semiBold, },
+    validityTagText: { color: Colors.white, fontSize: 12, fontFamily: Poppins.semiBold, },
     validityRow: { flexDirection: 'row', alignItems: 'center' },
-    validityText: { color: Colors.white, fontSize: 16,  marginLeft: 6, fontFamily: Poppins.semiBold, },
+    validityText: { color: Colors.white, fontSize: 16, marginLeft: 6, fontFamily: Poppins.semiBold, },
 
-    sectionTitle: { fontSize: 16,  color: Colors.textDark, marginTop: 28, marginBottom: 16, fontFamily: Poppins.semiBold, },
+    sectionTitle: { fontSize: 16, color: Colors.textDark, marginTop: 28, marginBottom: 16, fontFamily: Poppins.semiBold, },
     sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 28, marginBottom: 16 },
-    viewAll: { color: Colors.primary,  fontSize: 12, fontFamily: Poppins.semiBold, },
+    viewAll: { color: Colors.primary, fontSize: 12, fontFamily: Poppins.semiBold, },
 
     plansContainer: { marginBottom: 8 },
     planCard: {
@@ -515,7 +527,7 @@ const styles = StyleSheet.create({
     },
     paymentItemSelected: { borderColor: Colors.primary, backgroundColor: Colors.infoBg },
     paymentIconBox: { width: 48, height: 48, borderRadius: 24, backgroundColor: Colors.bgInput, justifyContent: 'center', alignItems: 'center' },
-    paymentTitle: { fontSize: 16,  color: Colors.textDark, fontFamily: Poppins.semiBold, },
+    paymentTitle: { fontSize: 16, color: Colors.textDark, fontFamily: Poppins.semiBold, },
     paymentSub: { fontSize: 12, color: Colors.textSecondary, marginTop: 2, fontFamily: Poppins.semiBold, },
 
     summaryCard: {
@@ -530,10 +542,10 @@ const styles = StyleSheet.create({
     },
     summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
     summaryLabel: { color: Colors.textSecondary, fontSize: 16, fontFamily: Poppins.semiBold, },
-    summaryValue: { color: Colors.textDark, fontSize: 16,  fontFamily: Poppins.semiBold, },
+    summaryValue: { color: Colors.textDark, fontSize: 16, fontFamily: Poppins.semiBold, },
     summaryDivider: { height: 1, backgroundColor: Colors.divider, marginVertical: 12 },
     totalRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    totalLabel: { fontSize: 16,  color: Colors.textDark, fontFamily: Poppins.semiBold, },
+    totalLabel: { fontSize: 16, color: Colors.textDark, fontFamily: Poppins.semiBold, },
     totalValue: { fontSize: 20, color: Colors.textDark, fontFamily: Poppins.semiBold, },
 
     walletBadge: {
@@ -547,7 +559,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.successBorder
     },
-    walletBadgeText: { color: Colors.successDark, fontSize: 12,  marginLeft: 8, fontFamily: Poppins.semiBold, },
+    walletBadgeText: { color: Colors.successDark, fontSize: 12, marginLeft: 8, fontFamily: Poppins.semiBold, },
 
     payButton: {
         backgroundColor: Colors.primaryDark,
@@ -559,7 +571,7 @@ const styles = StyleSheet.create({
         marginTop: 24,
         marginBottom: 30
     },
-    payButtonText: { color: Colors.white, fontSize: 16,  marginRight: 12, fontFamily: Poppins.semiBold, },
+    payButtonText: { color: Colors.white, fontSize: 16, marginRight: 12, fontFamily: Poppins.semiBold, },
     offersContainer: { gap: 12 },
     offerCard: {
         flexDirection: 'row',
@@ -571,10 +583,10 @@ const styles = StyleSheet.create({
         borderColor: Colors.infoLight,
     },
     offerIconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: Colors.white, justifyContent: 'center', alignItems: 'center' },
-    offerTitle: { fontSize: 16,  color: Colors.textDark, fontFamily: Poppins.semiBold, },
+    offerTitle: { fontSize: 16, color: Colors.textDark, fontFamily: Poppins.semiBold, },
     offerDesc: { fontSize: 12, color: Colors.textSecondary, marginTop: 2, fontFamily: Poppins.semiBold, },
     applyButton: { paddingHorizontal: 12, paddingVertical: 6 },
-    applyText: { color: Colors.primary,  fontSize: 12, fontFamily: Poppins.semiBold, },
+    applyText: { color: Colors.primary, fontSize: 12, fontFamily: Poppins.semiBold, },
     breakdownSection: { marginTop: 10 },
     breakdownRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
     breakdownLabel: { color: 'rgba(255,255,255,0.7)', fontSize: 12, fontFamily: Poppins.semiBold, },
@@ -590,9 +602,9 @@ const styles = StyleSheet.create({
     },
     slotCardSelected: { borderColor: Colors.primary, backgroundColor: Colors.infoBg },
     slotHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    slotTitle: { fontSize: 12,  color: Colors.textSecondary, textTransform: 'uppercase', fontFamily: Poppins.semiBold, },
+    slotTitle: { fontSize: 12, color: Colors.textSecondary, textTransform: 'uppercase', fontFamily: Poppins.semiBold, },
     slotTitleSelected: { color: Colors.primary },
-    slotTime: { fontSize: 12,  color: Colors.textDark, marginTop: 4, fontFamily: Poppins.semiBold, },
+    slotTime: { fontSize: 12, color: Colors.textDark, marginTop: 4, fontFamily: Poppins.semiBold, },
     slotTimeSelected: { color: Colors.primary },
     insightsRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 12, marginBottom: 30 },
     insightCard: {
@@ -616,7 +628,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     insightLabel: { fontSize: 12, color: Colors.textSecondary, letterSpacing: 0.5, fontFamily: Poppins.semiBold, },
-    insightValue: { fontSize: 16,  color: Colors.textDark, marginTop: 4, fontFamily: Poppins.semiBold, },
+    insightValue: { fontSize: 16, color: Colors.textDark, marginTop: 4, fontFamily: Poppins.semiBold, },
     topPromoBanner: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -625,11 +637,11 @@ const styles = StyleSheet.create({
         borderRadius: Radius.lg,
         padding: Spacing.md,
         marginBottom: Spacing.md,
-          elevation: 4,
-        shadowColor: Colors.primary, 
-       shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 1,
+        elevation: 4,
+        shadowColor: Colors.primary,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 1,
     },
     promoIconBg: {
         width: 44,

@@ -45,6 +45,10 @@ import RetailerListScreen from '../screens/Destributor/mainScreen/HomePage/Retai
 import AboutUsScreen from '../screens/main/Profile/AboutUsScreen';
 import ContactUsScreen from '../screens/main/Profile/ContactUsScreen';
 import TextContentScreen from '../screens/main/Profile/TextContentScreen';
+import PrivacyPolicyScreen from '../screens/main/Profile/PrivacyPolicyScreen';
+import TermsConditionsScreen from '../screens/main/Profile/TermsConditionsScreen';
+import RefundAndCancellationPolicyScreen from '../screens/main/Profile/RefundAndCancellationPolicyScreen';
+import CookiePolicyScreen from '../screens/main/Profile/CookiePolicyScreen';
 
 // Top-up Service Screens
 import AddTopUpScreen from '../screens/Destributor/mainScreen/HomePage/Top-up-service/AddTopUpScreen';
@@ -189,7 +193,11 @@ export type RootStackParamList = {
   AboutUs: undefined;
   ContactUs: undefined;
   PolicyDetailsScreen: undefined;
-  TextContent: { title: string; content: { title: string; text: string }[] };
+  TextContent: { title: string; content?: { title: string; text: string }[] };
+  PrivacyPolicy: undefined;
+  TermsConditions: undefined;
+  RefundAndCancellationPolicy: undefined;
+  CookiePolicy: undefined;
   // Top-up Service
   AddTopUp: undefined;
   TopUpList: undefined;
@@ -453,6 +461,22 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen
           name="TextContent"
           component={TextContentScreen}
+        />
+        <Stack.Screen
+          name="PrivacyPolicy"
+          component={PrivacyPolicyScreen}
+        />
+        <Stack.Screen
+          name="TermsConditions"
+          component={TermsConditionsScreen}
+        />
+        <Stack.Screen
+          name="RefundAndCancellationPolicy"
+          component={RefundAndCancellationPolicyScreen}
+        />
+        <Stack.Screen
+          name="CookiePolicy"
+          component={CookiePolicyScreen}
         />
 
         {/* Top-up Service */}

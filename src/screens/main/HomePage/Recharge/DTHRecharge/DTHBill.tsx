@@ -198,7 +198,7 @@ const DTHBill = () => {
                         <MaterialCommunityIcons name="wallet-outline" size={20} color={Colors.primary} />
                     </View>
                     <View style={styles.paymentDetails}>
-                        <Text style={styles.paymentName}>NextGen Wallet</Text>
+                        <Text style={styles.paymentName}>Monexis Wallet</Text>
                         <Text style={styles.paymentBalance}>Available Balance: {displayAmount}</Text>
                     </View>
                     <MaterialCommunityIcons
@@ -232,7 +232,7 @@ const DTHBill = () => {
                 {/* 5. Secure Badge */}
                 <View style={styles.secureBadge}>
                     <MaterialCommunityIcons name="shield-check" size={16} color={Colors.success} />
-                    <Text style={styles.secureText}>PAID VIA NEXTGEN WALLET</Text>
+                    <Text style={styles.secureText}>PAID VIA MONEXIS WALLET</Text>
                 </View>
 
                 {/* Space spacer inside scroll view for footer clearance */}

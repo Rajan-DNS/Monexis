@@ -207,7 +207,7 @@ const PolicyDetailsScreen = () => {
         <View style={styles.paymentMethods}>
           <PaymentOption
             id="wallet"
-            title="NextGen Wallet"
+            title="Monexis Wallet"
             subtitle={`Balance: ₹${config.currentAmount}`}
             icon="wallet-outline"
             selected={selectedPayment === 'wallet'}
@@ -235,7 +235,7 @@ const PolicyDetailsScreen = () => {
             size={20}
             color={Colors.successDark}
           />
-          <Text style={styles.walletBadgeText}>PAID VIA NEXTGEN WALLET</Text>
+          <Text style={styles.walletBadgeText}>PAID VIA Monexis WALLET</Text>
         </View>
 
         {/* PAY NOW BUTTON */}

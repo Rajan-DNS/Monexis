@@ -41,7 +41,7 @@ const ScanPayPayScreen: React.FC = () => {
     paramAmount: '',
     paramNote: '',
   };
-  console.log("qr data ",payee)
+  console.log("qr data ", payee)
 
   // Amount is editable — QR may or may not include one
   const [amount, setAmount] = useState(paramAmount || '');
@@ -324,7 +324,7 @@ const ScanPayPayScreen: React.FC = () => {
             <MaterialCommunityIcons name="wallet-outline" size={24} color={Colors.primary} />
           </View>
           <View style={styles.pmInfo}>
-            <Text style={styles.pmTitle}>NextGen Wallet</Text>
+            <Text style={styles.pmTitle}>Monexis Wallet</Text>
             <Text style={styles.pmSub}>Sufficient balance • Instant transfer</Text>
           </View>
           <MaterialCommunityIcons name="radiobox-marked" size={24} color={Colors.primary} />

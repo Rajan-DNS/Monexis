@@ -97,6 +97,17 @@ const PayBeneficiary = () => {
   }, [transferTypeResponse]);
 
   useEffect(() => {
+    // Configure Geolocation to use Google Play Services / Auto
+    try {
+      Geolocation.setRNConfiguration({
+        skipPermissionRequests: false,
+        authorizationLevel: 'whenInUse',
+        locationProvider: 'auto',
+      });
+    } catch (configError) {
+      console.warn('Geolocation setRNConfiguration error:', configError);
+    }
+
     loadBeneficiaries();
     getDeviceDetails();
     checkAndRequestLocationPermission();
@@ -152,25 +163,50 @@ const PayBeneficiary = () => {
     }
   };
 
-  const requestLocationSpecs = async () => {
+  const showEnableGpsDialog = () => {
+    Alert.alert(
+      'Device Location Turned Off',
+      'Location (GPS) is turned off on your device. Please enable Location Services in your phone settings to process payments.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Turn On Location',
+          onPress: async () => {
+            if (Platform.OS === 'android' && Linking.sendIntent) {
+              try {
+                await Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+                return;
+              } catch (e) {
+                console.warn('Could not open location source settings:', e);
+              }
+            }
+            Linking.openSettings();
+          },
+        },
+      ]
+    );
+  };
+
+  const requestLocationSpecs = async (): Promise<boolean> => {
     console.log('requestLocationSpecs called');
     if (Platform.OS === 'android') {
       try {
-        const granted = await PermissionsAndroid.request(
+        const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Location Access Request',
-            message: 'Secure transaction settlement parameters require current tracking values enabled.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
+          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        ]);
+        const fineGranted =
+          granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] ===
+          PermissionsAndroid.RESULTS.GRANTED;
+        const coarseGranted =
+          granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] ===
+          PermissionsAndroid.RESULTS.GRANTED;
+
         console.log('Permission result:', granted);
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        if (fineGranted || coarseGranted) {
           console.log('Permission granted, fetching location...');
           setHasLocationPermission(true);
-          getCurrentGPSCoordinates();
+          await getCurrentGPSCoordinates();
           return true;
         } else {
           console.log('Permission denied');
@@ -185,8 +221,8 @@ const PayBeneficiary = () => {
     } else {
       // For iOS, we'll assume permission is granted if getCurrentPosition succeeds
       console.log('iOS - fetching location directly');
-      getCurrentGPSCoordinates();
       setHasLocationPermission(true);
+      await getCurrentGPSCoordinates();
       return true;
     }
   };
@@ -195,20 +231,23 @@ const PayBeneficiary = () => {
     console.log('checkAndRequestLocationPermission called');
     if (Platform.OS === 'android') {
       try {
-        const hasPermission = await PermissionsAndroid.check(
+        const hasFinePermission = await PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
+        const hasCoarsePermission = await PermissionsAndroid.check(
+          PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+        );
+        const hasPermission = hasFinePermission || hasCoarsePermission;
 
-        console.log('Current permission status:', hasPermission);
+        console.log('Current permission status:', { hasFinePermission, hasCoarsePermission });
 
         if (hasPermission) {
           console.log('Permission already granted, fetching location...');
           setHasLocationPermission(true);
-          getCurrentGPSCoordinates();
+          await getCurrentGPSCoordinates();
         } else {
           console.log('Permission not granted, requesting permission...');
           setHasLocationPermission(false);
-          // Automatically request permission
           const granted = await requestLocationSpecs();
           if (granted) {
             console.log('Permission granted after request');
@@ -221,34 +260,58 @@ const PayBeneficiary = () => {
         setHasLocationPermission(false);
       }
     } else {
-      // For iOS, try to get location and set permission based on result
       console.log('iOS - trying to get location');
-      getCurrentGPSCoordinates();
       setHasLocationPermission(true);
+      await getCurrentGPSCoordinates();
     }
   };
 
-  const getCurrentGPSCoordinates = () => {
+  const getCurrentGPSCoordinates = (): Promise<{ latitude: number; longitude: number } | null> => {
     console.log('getCurrentGPSCoordinates called');
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocationCoords({ latitude, longitude });
-        console.log('✅ Location fetched successfully:', latitude, longitude);
-      },
-      (error) => {
-        console.warn('❌ Geolocation failed - Code:', error.code, 'Message:', error.message);
-        // On iOS, if location fails, mark permission as false
-        if (Platform.OS === 'ios' && error.code !== 3) { // code 3 is timeout
-          setHasLocationPermission(false);
-        }
-        // On Android, if permission error
-        if (error.code === 1) { // PERMISSION_DENIED
-          setHasLocationPermission(false);
-        }
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
+    return new Promise((resolve) => {
+      // 1st attempt: High accuracy (GPS / Google Play Services)
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocationCoords({ latitude, longitude });
+          console.log('✅ High-accuracy location fetched:', latitude, longitude);
+          resolve({ latitude, longitude });
+        },
+        (error) => {
+          console.warn('❌ Geolocation high-accuracy failed - Code:', error.code, 'Message:', error.message);
+
+          if (error.code === 1) { // PERMISSION_DENIED
+            setHasLocationPermission(false);
+            resolve(null);
+            return;
+          }
+
+          if (error.code === 2) { // POSITION_UNAVAILABLE (GPS switch is turned OFF)
+            showEnableGpsDialog();
+          }
+
+          // 2nd attempt: Fallback to coarse accuracy (network/wifi/cell provider)
+          console.log('🔄 Attempting fallback coarse location...');
+          Geolocation.getCurrentPosition(
+            (fallbackPosition) => {
+              const { latitude, longitude } = fallbackPosition.coords;
+              setLocationCoords({ latitude, longitude });
+              console.log('✅ Fallback location fetched successfully:', latitude, longitude);
+              resolve({ latitude, longitude });
+            },
+            (fallbackError) => {
+              console.warn('❌ Geolocation fallback failed - Code:', fallbackError.code, 'Message:', fallbackError.message);
+              if (fallbackError.code === 2) {
+                showEnableGpsDialog();
+              }
+              resolve(null);
+            },
+            { enableHighAccuracy: false, timeout: 20000, maximumAge: 60000 }
+          );
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+      );
+    });
   };
 
   const loadBeneficiaries = async () => {
@@ -463,46 +526,63 @@ const PayBeneficiary = () => {
     setIsRefreshingLocation(true);
 
     if (Platform.OS === 'android') {
-      const hasPermission = await PermissionsAndroid.check(
+      const hasFinePermission = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
       );
+      const hasCoarsePermission = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION
+      );
 
-      if (!hasPermission) {
+      if (!hasFinePermission && !hasCoarsePermission) {
         const granted = await requestLocationSpecs();
-        setIsRefreshingLocation(false);
         if (!granted) {
+          setIsRefreshingLocation(false);
           Alert.alert(
             'Permission Denied',
             'Location permission is required. Please tap "Pay Now" to grant permission or enable it in Settings.',
             [{ text: 'OK' }]
           );
+          return;
         }
-        return;
       }
     }
 
-    await checkAndRequestLocationPermission();
-    setTimeout(() => {
+    try {
+      await checkAndRequestLocationPermission();
+    } finally {
       setIsRefreshingLocation(false);
-    }, 2000);
+    }
   };
 
   const handleOpenSettings = () => {
     console.log('Opening device settings...');
     Alert.alert(
-      'Enable Location Permission',
-      'You will be redirected to device settings. Please enable location permission for this app, then return here.',
+      'Location Settings',
+      'Please ensure both App Location Permission and Device GPS are enabled, then return to the app.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Open Settings',
+          text: 'Location (GPS)',
+          onPress: async () => {
+            if (Platform.OS === 'android' && Linking.sendIntent) {
+              try {
+                await Linking.sendIntent('android.settings.LOCATION_SOURCE_SETTINGS');
+                return;
+              } catch (e) {
+                console.warn('Could not open location source settings:', e);
+              }
+            }
+            Linking.openSettings();
+          },
+        },
+        {
+          text: 'App Permissions',
           onPress: () => {
             if (Platform.OS === 'android') {
               Linking.openSettings();
             } else {
               Linking.openURL('app-settings:');
             }
-            // The AppState listener will automatically refetch when user returns
           },
         },
       ]
@@ -684,11 +764,15 @@ const PayBeneficiary = () => {
                     </TouchableOpacity>
                   </View>
                 </View>
-                {locationCoords && hasLocationPermission && (
+                {locationCoords && hasLocationPermission ? (
                   <Text style={styles.locationCoordsText}>
                     📍 Lat: {locationCoords.latitude.toFixed(6)}, Long: {locationCoords.longitude.toFixed(6)}
                   </Text>
-                )}
+                ) : hasLocationPermission ? (
+                  <Text style={[styles.locationCoordsText, { color: '#6B7280', fontStyle: 'italic' }]}>
+                    {isRefreshingLocation ? '⏳ Fetching GPS coordinates...' : '⚠️ Coordinates not acquired yet. Tap refresh or ensure GPS is on.'}
+                  </Text>
+                ) : null}
                 {!hasLocationPermission && (
                   <View style={styles.locationHintContainer}>
                     <Text style={styles.locationHintText}>
